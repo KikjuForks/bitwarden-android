@@ -3252,6 +3252,111 @@ class VaultItemScreenTest : BitwardenComposeTest() {
     }
 
     //endregion ssh key
+
+    //region bank account
+
+    @Test
+    fun `in bank account state, all fields should be displayed when populated`() {
+        mutableStateFlow.update { it.copy(viewState = DEFAULT_BANK_ACCOUNT_VIEW_STATE) }
+
+        composeTestRule.onNodeWithTextAfterScroll("the bank name").assertIsDisplayed()
+        composeTestRule.onNodeWithTextAfterScroll("the name on account").assertIsDisplayed()
+        composeTestRule.onNodeWithTextAfterScroll("the account type").assertIsDisplayed()
+        composeTestRule.onNodeWithTextAfterScroll("Account number").assertIsDisplayed()
+        composeTestRule.onNodeWithTextAfterScroll("the routing number").assertIsDisplayed()
+        composeTestRule.onNodeWithTextAfterScroll("the branch number").assertIsDisplayed()
+        composeTestRule.onNodeWithTextAfterScroll("PIN").assertIsDisplayed()
+        composeTestRule.onNodeWithTextAfterScroll("the swift code").assertIsDisplayed()
+        composeTestRule.onNodeWithTextAfterScroll("the iban").assertIsDisplayed()
+        composeTestRule.onNodeWithTextAfterScroll("the bank contact phone").assertIsDisplayed()
+    }
+
+    @Test
+    fun `in bank account state, on copy account number click should send CopyAccountNumberClick`() {
+        mutableStateFlow.update { it.copy(viewState = DEFAULT_BANK_ACCOUNT_VIEW_STATE) }
+        composeTestRule
+            .onNodeWithContentDescriptionAfterScroll("Copy account number")
+            .performClick()
+
+        verify(exactly = 1) {
+            viewModel.trySendAction(VaultItemAction.ItemType.BankAccount.CopyAccountNumberClick)
+        }
+    }
+
+    @Test
+    fun `in bank account state, on copy routing number click should send CopyRoutingNumberClick`() {
+        mutableStateFlow.update { it.copy(viewState = DEFAULT_BANK_ACCOUNT_VIEW_STATE) }
+        composeTestRule
+            .onNodeWithContentDescriptionAfterScroll("Copy routing number")
+            .performClick()
+
+        verify(exactly = 1) {
+            viewModel.trySendAction(VaultItemAction.ItemType.BankAccount.CopyRoutingNumberClick)
+        }
+    }
+
+    @Test
+    fun `in bank account state, on copy swift code click should send CopySwiftCodeClick`() {
+        mutableStateFlow.update { it.copy(viewState = DEFAULT_BANK_ACCOUNT_VIEW_STATE) }
+        composeTestRule
+            .onNodeWithContentDescriptionAfterScroll("Copy SWIFT code")
+            .performClick()
+
+        verify(exactly = 1) {
+            viewModel.trySendAction(VaultItemAction.ItemType.BankAccount.CopySwiftCodeClick)
+        }
+    }
+
+    @Test
+    fun `in bank account state, on copy iban click should send CopyIbanClick`() {
+        mutableStateFlow.update { it.copy(viewState = DEFAULT_BANK_ACCOUNT_VIEW_STATE) }
+        composeTestRule
+            .onNodeWithContentDescriptionAfterScroll("Copy IBAN")
+            .performClick()
+
+        verify(exactly = 1) {
+            viewModel.trySendAction(VaultItemAction.ItemType.BankAccount.CopyIbanClick)
+        }
+    }
+
+    @Suppress("MaxLineLength")
+    @Test
+    fun `in bank account state, on show account number click should send AccountNumberVisibilityClick`() {
+        mutableStateFlow.update { it.copy(viewState = DEFAULT_BANK_ACCOUNT_VIEW_STATE) }
+        composeTestRule
+            .onNodeWithTextAfterScroll("Account number")
+            .onChildren()
+            .filterToOne(hasContentDescription("Show"))
+            .performClick()
+
+        verify(exactly = 1) {
+            viewModel.trySendAction(
+                VaultItemAction.ItemType.BankAccount.AccountNumberVisibilityClick(
+                    isVisible = true,
+                ),
+            )
+        }
+    }
+
+    @Test
+    fun `in bank account state, on show pin click should send PinVisibilityClick`() {
+        mutableStateFlow.update { it.copy(viewState = DEFAULT_BANK_ACCOUNT_VIEW_STATE) }
+        // Scroll past the PIN field so it sits above the FAB before toggling visibility.
+        composeTestRule.onNodeWithTextAfterScroll("the swift code")
+        composeTestRule
+            .onNodeWithText("PIN")
+            .onChildren()
+            .filterToOne(hasContentDescription("Show"))
+            .performClick()
+
+        verify(exactly = 1) {
+            viewModel.trySendAction(
+                VaultItemAction.ItemType.BankAccount.PinVisibilityClick(isVisible = true),
+            )
+        }
+    }
+
+    //endregion bank account
 }
 
 //region Helper functions
@@ -3468,6 +3573,20 @@ private val DEFAULT_SSH_KEY: VaultItemState.ViewState.Content.ItemType.SshKey =
         showPrivateKey = false,
     )
 
+private val DEFAULT_BANK_ACCOUNT: VaultItemState.ViewState.Content.ItemType.BankAccount =
+    VaultItemState.ViewState.Content.ItemType.BankAccount(
+        bankName = "the bank name",
+        nameOnAccount = "the name on account",
+        accountType = "the account type",
+        accountNumber = "the account number",
+        routingNumber = "the routing number",
+        branchNumber = "the branch number",
+        pin = "the pin",
+        swiftCode = "the swift code",
+        iban = "the iban",
+        bankContactPhone = "the bank contact phone",
+    )
+
 private val EMPTY_COMMON: VaultItemState.ViewState.Content.Common =
     VaultItemState.ViewState.Content.Common(
         name = "cipher",
@@ -3597,6 +3716,12 @@ private val DEFAULT_SSH_KEY_VIEW_STATE: VaultItemState.ViewState.Content =
     VaultItemState.ViewState.Content(
         common = DEFAULT_COMMON.copy(iconData = IconData.Local(BitwardenDrawable.ic_ssh_key)),
         type = DEFAULT_SSH_KEY,
+    )
+
+private val DEFAULT_BANK_ACCOUNT_VIEW_STATE: VaultItemState.ViewState.Content =
+    VaultItemState.ViewState.Content(
+        common = DEFAULT_COMMON.copy(iconData = IconData.Local(BitwardenDrawable.ic_globe)),
+        type = DEFAULT_BANK_ACCOUNT,
     )
 
 private val EMPTY_VIEW_STATES = listOf(
