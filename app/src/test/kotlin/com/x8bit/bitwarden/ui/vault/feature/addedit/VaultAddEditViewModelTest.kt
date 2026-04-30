@@ -4103,14 +4103,17 @@ class VaultAddEditViewModelTest : BaseViewModelTest() {
         }
 
         @Test
-        fun `AccountNumberVisibilityChange should not change state`() = runTest {
+        fun `AccountNumberVisibilityChange should toggle showAccountNumber`() = runTest {
             viewModel.trySendAction(
                 VaultAddEditAction.ItemType.BankAccountType.AccountNumberVisibilityChange(
                     isVisible = true,
                 ),
             )
 
-            assertEquals(vaultAddItemInitialState, viewModel.stateFlow.value)
+            assertEquals(
+                expectedBankAccount { copy(showAccountNumber = true) },
+                viewModel.stateFlow.value,
+            )
         }
 
         @Test
@@ -4154,14 +4157,17 @@ class VaultAddEditViewModelTest : BaseViewModelTest() {
         }
 
         @Test
-        fun `PinVisibilityChange should not change state`() = runTest {
+        fun `PinVisibilityChange should toggle showPin`() = runTest {
             viewModel.trySendAction(
                 VaultAddEditAction.ItemType.BankAccountType.PinVisibilityChange(
                     isVisible = true,
                 ),
             )
 
-            assertEquals(vaultAddItemInitialState, viewModel.stateFlow.value)
+            assertEquals(
+                expectedBankAccount { copy(showPin = true) },
+                viewModel.stateFlow.value,
+            )
         }
 
         @Test
@@ -4188,6 +4194,20 @@ class VaultAddEditViewModelTest : BaseViewModelTest() {
 
             assertEquals(
                 expectedBankAccount { copy(iban = "GB29NWBK60161331926819") },
+                viewModel.stateFlow.value,
+            )
+        }
+
+        @Test
+        fun `IbanVisibilityChange should toggle showIban`() = runTest {
+            viewModel.trySendAction(
+                VaultAddEditAction.ItemType.BankAccountType.IbanVisibilityChange(
+                    isVisible = true,
+                ),
+            )
+
+            assertEquals(
+                expectedBankAccount { copy(showIban = true) },
                 viewModel.stateFlow.value,
             )
         }

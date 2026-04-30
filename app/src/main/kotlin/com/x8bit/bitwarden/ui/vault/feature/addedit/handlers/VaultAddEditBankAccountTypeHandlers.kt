@@ -19,6 +19,7 @@ import com.x8bit.bitwarden.ui.vault.model.VaultBankAccountType
  * @property onPinVisibilityChange Handles toggles of the PIN visibility.
  * @property onSwiftCodeTextChange Handles changes to the SWIFT code text input.
  * @property onIbanTextChange Handles changes to the IBAN text input.
+ * @property onIbanVisibilityChange Handles toggles of the IBAN visibility.
  * @property onBankContactPhoneTextChange Handles changes to the bank contact phone text input.
  */
 @Suppress("LongParameterList")
@@ -34,6 +35,7 @@ data class VaultAddEditBankAccountTypeHandlers(
     val onPinVisibilityChange: (Boolean) -> Unit,
     val onSwiftCodeTextChange: (String) -> Unit,
     val onIbanTextChange: (String) -> Unit,
+    val onIbanVisibilityChange: (Boolean) -> Unit,
     val onBankContactPhoneTextChange: (String) -> Unit,
 ) {
     @Suppress("UndocumentedPublicClass")
@@ -117,6 +119,13 @@ data class VaultAddEditBankAccountTypeHandlers(
                 onIbanTextChange = {
                     viewModel.trySendAction(
                         VaultAddEditAction.ItemType.BankAccountType.IbanTextChange(iban = it),
+                    )
+                },
+                onIbanVisibilityChange = {
+                    viewModel.trySendAction(
+                        VaultAddEditAction.ItemType.BankAccountType.IbanVisibilityChange(
+                            isVisible = it,
+                        ),
                     )
                 },
                 onBankContactPhoneTextChange = {

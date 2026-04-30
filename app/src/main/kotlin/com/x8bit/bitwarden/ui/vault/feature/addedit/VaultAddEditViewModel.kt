@@ -1715,7 +1715,9 @@ class VaultAddEditViewModel @Inject constructor(
                 updateBankAccountContent { it.copy(accountNumber = action.accountNumber) }
             }
 
-            is VaultAddEditAction.ItemType.BankAccountType.AccountNumberVisibilityChange -> Unit
+            is VaultAddEditAction.ItemType.BankAccountType.AccountNumberVisibilityChange -> {
+                updateBankAccountContent { it.copy(showAccountNumber = action.isVisible) }
+            }
 
             is VaultAddEditAction.ItemType.BankAccountType.RoutingNumberTextChange -> {
                 updateBankAccountContent { it.copy(routingNumber = action.routingNumber) }
@@ -1729,7 +1731,9 @@ class VaultAddEditViewModel @Inject constructor(
                 updateBankAccountContent { it.copy(pin = action.pin) }
             }
 
-            is VaultAddEditAction.ItemType.BankAccountType.PinVisibilityChange -> Unit
+            is VaultAddEditAction.ItemType.BankAccountType.PinVisibilityChange -> {
+                updateBankAccountContent { it.copy(showPin = action.isVisible) }
+            }
 
             is VaultAddEditAction.ItemType.BankAccountType.SwiftCodeTextChange -> {
                 updateBankAccountContent { it.copy(swiftCode = action.swiftCode) }
@@ -1737,6 +1741,10 @@ class VaultAddEditViewModel @Inject constructor(
 
             is VaultAddEditAction.ItemType.BankAccountType.IbanTextChange -> {
                 updateBankAccountContent { it.copy(iban = action.iban) }
+            }
+
+            is VaultAddEditAction.ItemType.BankAccountType.IbanVisibilityChange -> {
+                updateBankAccountContent { it.copy(showIban = action.isVisible) }
             }
 
             is VaultAddEditAction.ItemType.BankAccountType.BankContactPhoneTextChange -> {
@@ -3020,6 +3028,20 @@ data class VaultAddEditState(
 
                 /**
                  * Represents the bank account item information.
+                 *
+                 * @property bankName The name of the bank.
+                 * @property nameOnAccount The name on the bank account.
+                 * @property accountType The selected bank account type.
+                 * @property accountNumber The bank account number.
+                 * @property routingNumber The bank routing number.
+                 * @property branchNumber The bank branch number.
+                 * @property pin The bank account PIN.
+                 * @property swiftCode The bank SWIFT code.
+                 * @property iban The bank IBAN.
+                 * @property bankContactPhone The bank contact phone number.
+                 * @property showAccountNumber Whether the account number is currently revealed.
+                 * @property showPin Whether the PIN is currently revealed.
+                 * @property showIban Whether the IBAN is currently revealed.
                  */
                 @Parcelize
                 data class BankAccount(
@@ -3033,6 +3055,9 @@ data class VaultAddEditState(
                     val swiftCode: String = "",
                     val iban: String = "",
                     val bankContactPhone: String = "",
+                    val showAccountNumber: Boolean = false,
+                    val showPin: Boolean = false,
+                    val showIban: Boolean = false,
                 ) : ItemType() {
                     override val itemTypeOption: ItemTypeOption
                         get() = ItemTypeOption.BANK_ACCOUNT
@@ -4047,8 +4072,7 @@ sealed class VaultAddEditAction {
             data class AccountNumberTextChange(val accountNumber: String) : BankAccountType()
 
             /**
-             * Fired when the account number visibility has changed. Visibility itself is held in
-             * the composable; this action exists so future telemetry can hook in.
+             * Fired when the account number visibility has changed.
              */
             data class AccountNumberVisibilityChange(val isVisible: Boolean) : BankAccountType()
 
@@ -4068,8 +4092,7 @@ sealed class VaultAddEditAction {
             data class PinTextChange(val pin: String) : BankAccountType()
 
             /**
-             * Fired when the PIN visibility has changed. Visibility itself is held in the
-             * composable; this action exists so future telemetry can hook in.
+             * Fired when the PIN visibility has changed.
              */
             data class PinVisibilityChange(val isVisible: Boolean) : BankAccountType()
 
@@ -4082,6 +4105,11 @@ sealed class VaultAddEditAction {
              * Fired when the IBAN text input is changed.
              */
             data class IbanTextChange(val iban: String) : BankAccountType()
+
+            /**
+             * Fired when the IBAN visibility has changed.
+             */
+            data class IbanVisibilityChange(val isVisible: Boolean) : BankAccountType()
 
             /**
              * Fired when the bank contact phone text input is changed.

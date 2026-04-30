@@ -1314,8 +1314,8 @@ Do you want to switch to this account?</string>
     <string name="name_on_account">Name on account</string>
     <string name="account_type">Account type</string>
     <string name="account_number">Account number</string>
-    <string name="routing_number">Routing/transit number</string>
-    <string name="branch_number">Branch/institution number</string>
+    <string name="routing_number">Routing number</string>
+    <string name="branch_number">Branch number</string>
     <string name="swift_code">SWIFT code</string>
     <string name="iban">IBAN</string>
     <string name="bank_contact_phone">Bank contact phone</string>
